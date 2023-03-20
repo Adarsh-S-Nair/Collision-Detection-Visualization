@@ -26,7 +26,7 @@ export default class Mouse {
 
         if (this.isDragging) {
             let rectangle = this.getDraggingRectangle();
-            rectangle.drag(this, this.position, this.lastPosition);
+            rectangle.drag(this, this.position, this.lastPosition, this.rectangles);
             this.updateLastPosition();
         }
     }

@@ -12,7 +12,10 @@ let mouse;
 
 let colors = [
     '#51BBFE',
-    '#E64452'
+    '#E64452',
+    // '#CE6D8B',
+    // '#CEBBC9',
+    // '#FAA381'
 ]
 
 window.onresize = () => {
@@ -38,7 +41,7 @@ let main = () => {
     rectangles = []
 
     // Generate all rectangles
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < colors.length; i++) {
         let r = new Rectangle({id: i, width: 150, height: 150, color: colors[i]}, context)
         r.generatePosition(rectangles);
         rectangles.push(r)

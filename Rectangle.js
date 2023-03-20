@@ -63,10 +63,20 @@ export default class Rectangle {
         return false;
     }
 
-    drag (mouse, position, lastPosition) {
+    drag (mouse, position, lastPosition, rectangles) {
         this.velocity.x = 0;
         this.velocity.y = 0;
-        
+
+        // Check if rectangle is colliding with another rectangle
+        rectangles.forEach(r => {
+            // If this rectangle is the current one, go next
+            if (this.id == r.id) return;
+            // If this rectangle collides with the current one, ...
+            if (this.collidesWith(r)) {
+                this.resolveCollisionWith(r)
+            }
+        })
+
         // Get the change in position
         let dx = position.x - lastPosition.x;
         let dy = position.y - lastPosition.y;
@@ -133,9 +143,25 @@ export default class Rectangle {
 
     resolveCollisionWith (other) {
         console.log('resolving collision...');
-        const xDiff = this.velocity.x - other.velocity.x;
-        const yDiff = this.velocity.y - other.velocity.y;
+        const xVelocityDiff = this.velocity.x - other.velocity.x;
+        const yVelocityDiff = this.velocity.y - other.velocity.y;
 
+        const xDistanceDiff = (other.position.x + other.width) - (this.position.x + this.width);
+        const yDistanceDiff = (other.position.y + other.width) - (this.position.y + this.width);
 
+        if (xVelocityDiff * xDistanceDiff + yVelocityDiff * yDistanceDiff >= 0) {
+            let sumMasses = this.mass + other.mass;
+            this.velocity.x = (((this.mass - other.mass) / sumMasses) * this.velocity.x) +
+                                (((2 * other.mass) / sumMasses) * other.velocity.x);
+
+            other.velocity.x = (((2 * this.mass) / sumMasses) * this.velocity.x) +
+                                (((other.mass - this.mass) / sumMasses) * other.velocity.x);
+
+            this.velocity.y = (((this.mass - other.mass) / sumMasses) * this.velocity.y) +
+                                (((2 * other.mass) / sumMasses) * other.velocity.y);
+
+            other.velocity.x = (((2 * this.mass) / sumMasses) * this.velocity.y) +
+                                (((other.mass - this.mass) / sumMasses) * other.velocity.y);
+        }
     }
 }
